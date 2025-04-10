@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Event Registry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            background-color: #001824;
+            color: white;
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid transparent;
+        }
+
+        .navbar a.active {
+            border-bottom: 3px solid #ff0066;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .favorites-btn {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+
+        .favorites-count {
+            background-color: white;
+            color: #001824;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .main-content {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 1rem 0;
+            height: calc(100vh - 58px);
+        }
+
+        .sidebar-header {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-header i {
+            margin-right: 0.5rem;
+        }
+
+        .category-item {
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+
+        .category-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .category-item.active {
+            background-color: #f0f0f0;
+            border-left: 3px solid #ff0066;
+        }
+
+        .category-item img, .category-item i {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1.5rem;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            background-color: #ff0066;
+            color: white;
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .date-selector button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .date-display {
+            margin: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .date-display i {
+            margin-right: 0.5rem;
+        }
+
+        .event-section {
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title img, .section-title i {
+            margin-right: 0.75rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pin-icon {
+            color: #0067b8;
+            margin-left: 0.75rem;
+        }
+
+        .sort-icon {
+            color: #666;
+            cursor: pointer;
+        }
+
+        .event-row {
+            display: flex;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+        }
+
+        .star-icon {
+            color: #ddd;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+
+        .team-column {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .team-logo {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+
+        .score-column {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-column {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .actions-column {
+            width: 80px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .action-icon {
+            margin-left: 0.75rem;
+            color: #666;
+            cursor: pointer;
+        }
+
+        /* Add Event Form Styles */
+        .add-event-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ff0066;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: none;
+        }
+
+        .event-form-container {
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .form-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #0067b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .stats-badge {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="favorites-btn">
+            <i class="nav-icon">⭐</i> FAVORITES <span class="favorites-count">3</span>
+        </div>
+        <a href="#" class="active"><i class="nav-icon">⚽</i> FOOTBALL</a>
+        <a href="#"><i class="nav-icon">🏀</i> BASKETBALL</a>
+        <a href="#"><i class="nav-icon">🎾</i> TENNIS</a>
+        <a href="#"><i class="nav-icon">🏊</i> SWIMMING</a>
+        <a href="#"><i class="nav-icon">🏃</i> RUNNING</a>
+    </nav>
+
+    <div class="main-content">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i>📊</i> MY ACTIVITIES
+            </div>
+            <div class="category-item active">
+                <i>📅</i> All Activities
+            </div>
+            <div class="category-item">
+                <i>🗓️</i> Upcoming Events
+            </div>
+            <div class="category-item">
+                <i>✅</i> Completed Activities
+            </div>
+            <div class="category-item">
+                <i>📈</i> Statistics & Progress
+            </div>
+
+            <div class="sidebar-header">
+                <i>🏆</i> MY SPORTS
+            </div>
+            <div class="category-item">
+                <i>🏃</i> Running
+            </div>
+            <div class="category-item">
+                <i>🏊</i> Swimming
+            </div>
+            <div class="category-item">
+                <i>🏀</i> Basketball
+            </div>
+            <div class="category-item">
+                <i>⚽</i> Football
+            </div>
+            <div class="category-item">
+                <i>🚴</i> Cycling
+            </div>
+
+            <div class="sidebar-header">
+                <i>👥</i> SOCIAL
+            </div>
+            <div class="category-item">
+                <i>👫</i> Friends' Activities
+            </div>
+            <div class="category-item">
+                <i>🤝</i> Group Events
+            </div>
+            <div class="category-item">
+                <i>🏆</i> Challenges
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="event-form-container">
+                <div class="form-title">Add New Sports Activity</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventName">Activity Name</label>
+                        <input type="text" id="eventName" placeholder="Enter activity name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sportType">Sport Type</label>
+                        <select id="sportType">
+                            <option value="">Select sport</option>
+                            <option value="running">Running</option>
+                            <option value="swimming">Swimming</option>
+                            <option value="basketball">Basketball</option>
+                            <option value="football">Football</option>
+                            <option value="cycling">Cycling</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="gym">Gym Workout</option>
+                            <option value="yoga">Yoga</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Date</label>
+                        <input type="date" id="eventDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Time</label>
+                        <input type="time" id="eventTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDuration">Duration (minutes)</label>
+                        <input type="number" id="eventDuration" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventLocation">Location</label>
+                        <input type="text" id="eventLocation" placeholder="Enter location">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventIntensity">Intensity</label>
+                        <select id="eventIntensity">
+                            <option value="light">Light</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="intense">Intense</option>
+                            <option value="maximum">Maximum</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventNotes">Notes</label>
+                        <textarea id="eventNotes" placeholder="Add any additional notes about your activity"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="save-btn">Save Activity</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">ALL</div>
+                <div class="tab">UPCOMING</div>
+                <div class="tab">IN PROGRESS</div>
+                <div class="tab">COMPLETED</div>
+                <div class="tab">PAST</div>
+            </div>
+
+            <div class="date-selector">
+                <button>◀</button>
+                <div class="date-display"><i>📅</i> 10/04 THURSDAY</div>
+                <button>▶</button>
+            </div>
+
+            <div class="event-section">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <div class="section-title">
+                            <i>📅</i> TODAY'S SCHEDULED ACTIVITIES
+                        </div>
+                        <div class="pin-icon">📌</div>
+                    </div>
+                    <div class="sort-icon">▼</div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">⭐</div>
+                    <div class="team-column">
+                        <div class="team-logo">🏃</div>
+                        <span>Morning Run</span>
+                    </div>
+                    <div class="score-column">5km</div>
+                    <div class="status-column">6:00</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">⭐</div>
+                    <div class="team-column">
+                        <div class="team-logo">🏀</div>
+                        <span>Office Basketball</span>
+                    </div>
+                    <div class="score-column">1hr</div>
+                    <div class="status-column">12:30</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">🏊</div>
+                        <span>Weekly Swimming</span>
+                    </div>
+                    <div class="score-column">45m</div>
+                    <div class="status-column">18:00</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-section">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <div class="section-title">
+                            <i>✅</i> RECENT COMPLETED ACTIVITIES
+                        </div>
+                    </div>
+                    <div class="sort-icon">▼</div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">🎾</div>
+                        <span>Tennis Practice</span>
+                        <div style="margin-left: 10px;" class="stats-badge">+120 points</div>
+                    </div>
+                    <div class="score-column">2hr</div>
+                    <div class="status-column">YESTERDAY</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">⚽</div>
+                        <span>Football Match</span>
+                        <div style="margin-left: 10px;" class="stats-badge">+180 points</div>
+                    </div>
+                    <div class="score-column">90m</div>
+                    <div class="status-column">2 DAYS AGO</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">🏃</div>
+                        <span>Morning Run</span>
+                        <div style="margin-left: 10px;" class="stats-badge">+85 points</div>
+                    </div>
+                    <div class="score-column">4km</div>
+                    <div class="status-column">3 DAYS AGO</div>
+                    <div class="actions-column">
+                        <span class="action-icon">📊</span>
+                        <span class="action-icon">✏️</span>
+                        <span class="action-icon">🗑️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-section">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <div class="section-title">
+                            <i>👥</i> FRIENDS' RECENT ACTIVITIES
+                        </div>
+                    </div>
+                    <div class="sort-icon">▼</div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">🚴</div>
+                        <span>John D. - Cycling Trip</span>
+                    </div>
+                    <div class="score-column">15km</div>
+                    <div class="status-column">TODAY</div>
+                    <div class="actions-column">
+                        <span class="action-icon">👍</span>
+                        <span class="action-icon">💬</span>
+                    </div>
+                </div>
+
+                <div class="event-row">
+                    <div class="star-icon">☆</div>
+                    <div class="team-column">
+                        <div class="team-logo">🏋️</div>
+                        <span>Sarah M. - Gym Workout</span>
+                    </div>
+                    <div class="score-column">60m</div>
+                    <div class="status-column">YESTERDAY</div>
+                    <div class="actions-column">
+                        <span class="action-icon">👍</span>
+                        <span class="action-icon">💬</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="add-event-button">+</button>
+        </div>
+    </div>
+
+    <script>
+        // Basic interactivity for the interface
+        document.addEventListener('DOMContentLoaded', function() {
+            // Star functionality
+            const stars = document.querySelectorAll('.star-icon');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    if (this.textContent === '☆') {
+                        this.textContent = '⭐';
+                    } else {
+                        this.textContent = '☆';
+                    }
+                });
+            });
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Category switching
+            const categories = document.querySelectorAll('.category-item');
+            categories.forEach(category => {
+                category.addEventListener('click', function() {
+                    categories.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add event button functionality
+            const addEventBtn = document.querySelector('.add-event-button');
+            const eventForm = document.querySelector('.event-form-container');
+
+            // Initially hide the form
+            eventForm.style.display = 'none';
+
+            addEventBtn.addEventListener('click', function() {
+                eventForm.style.display = eventForm.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Cancel button
+            const cancelBtn = document.querySelector('.cancel-btn');
+            cancelBtn.addEventListener('click', function() {
+                eventForm.style.display = 'none';
+            });
+
+            // Save button (just for demonstration)
+            const saveBtn = document.querySelector('.save-btn');
+            saveBtn.addEventListener('click', function() {
+                alert('Activity saved! In a real application, this would be sent to your backend.');
+                eventForm.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
